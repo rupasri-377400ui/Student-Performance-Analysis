@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Student Performance Analysis</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="{{ url_for('home') }}">SP<span>ARK</span></a>
+  <div class="tag">STUDENT PERFORMANCE ANALYTICS</div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <div>
+      <p class="eyebrow">POWERED BY APACHE SPARK</p>
+      <h1>Understand student<br><em>performance.</em></h1>
+      <p class="sub">Track marks, explore class performance and understand student progress.</p>
+    </div>
+    <div class="hero-mark">✳</div>
+  </section>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+      <div class="alert {{ category }}">{{ message }}</div>
+    {% endfor %}
+  {% endwith %}
+
+  <section class="dashboard-section" id="dashboard">
+    <div class="section-head">
+      <div><p class="eyebrow">OVERVIEW</p><h2>Class dashboard</h2></div>
+      <span class="step">LIVE SESSION SUMMARY</span>
+    </div>
+
+    {% if dashboard %}
+    <div class="metrics">
+      <article class="metric">
+        <span class="metric-icon">▦</span>
+        <small>TOTAL STUDENTS</small>
+        <strong>{{ dashboard.total }}</strong>
+        <p>Records analyzed</p>
+      </article>
+      <article class="metric">
+        <span class="metric-icon">◎</span>
+        <small>AVERAGE MARKS</small>
+        <strong>{{ "%.2f"|format(dashboard.average) }}<i>/20</i></strong>
+        <p>Average across 3 exams</p>
+      </article>
+      <article class="metric">
+        <span class="metric-icon">↗</span>
+        <small>HIGH PERFORMERS</small>
+        <strong>{{ dashboard.counts.High }}</strong>
+        <p>Final marks: 14–20</p>
+      </article>
+      <article class="metric">
+        <span class="metric-icon">◷</span>
+        <small>FINAL EXAM AVERAGE</small>
+        <strong>{{ "%.2f"|format(dashboard.overall_final) }}<i>/20</i></strong>
+        <p>Class final exam average</p>
+      </article>
+    </div>
+
+    <div class="charts-grid">
+      <section class="panel chart-panel">
+        <div class="chart-heading">
+          <div><p class="eyebrow">STUDENT BREAKDOWN</p><h3>Performance distribution</h3></div>
+          <span class="chart-note">By final exam marks</span>
+        </div>
+        {% for label in ['High', 'Medium', 'Low'] %}
+        {% set amount = dashboard.counts[label] %}
+        {% set percent = (amount / dashboard.total * 100) if dashboard.total else 0 %}
+        <div class="bar-row">
+          <div class="bar-label"><span class="dot {{ label|lower }}"></span>{{ label }}<b>{{ amount }}</b></div>
+          <div class="track"><div class="bar {{ label|lower }}" style="width: {{ percent }}%"></div></div>
+          <small>{{ "%.0f"|format(percent) }}%</small>
+        </div>
+        {% endfor %}
+        <p class="chart-foot">Low: 0–9 marks · Medium: 10–13 marks · High: 14–20 marks</p>
+      </section>
+
+      <section class="panel chart-panel">
+        <div class="chart-heading">
+          <div><p class="eyebrow">EXAM OVERVIEW</p><h3>Average marks by exam</h3></div>
+          <span class="chart-note">Out of 20</span>
+        </div>
+        {% for exam in dashboard.exam_averages %}
+        <div class="exam-row">
+          <div class="exam-label"><span>{{ exam.label }}</span><b>{{ "%.2f"|format(exam.value) }}/20</b></div>
+          <div class="track"><div class="bar exam" style="width: {{ (exam.value / 20 * 100) }}%"></div></div>
+        </div>
+        {% endfor %}
+        <p class="chart-foot">Average marks are calculated from all submitted student records.</p>
+      </section>
+    </div>
+    {% else %}
+    <div class="empty-dashboard panel">
+      <div class="empty-icon">▤</div>
+      <h3>Your dashboard is waiting for data</h3>
+      <p>Submit the first student record below. Class statistics and charts will appear here automatically.</p>
+    </div>
+    {% endif %}
+  </section>
+
+  {% if results %}
+  <section class="results panel" id="latest-result">
+    <div class="section-head">
+      <div><p class="eyebrow">SPARK ANALYSIS COMPLETE</p><h2>Latest result: {{ results.name }}</h2></div>
+      <span class="step">ANALYSIS</span>
+    </div>
+    <div class="result-strip">
+      <div><small>AVERAGE MARKS</small><strong>{{ "%.2f"|format(results.average) }}<i>/20</i></strong></div>
+      <div><small>PERFORMANCE CATEGORY</small><strong class="category {{ results.category|lower }}">{{ results.category }}</strong></div>
+      <div><small>FINAL EXAM MARKS</small><strong>{{ students[-1].G3 }}<i>/20</i></strong></div>
+    </div>
+  </section>
+  {% endif %}
+
+  <section class="panel form-panel" id="add-student">
+    <div class="section-head">
+      <div><p class="eyebrow">NEW RECORD</p><h2>Add student details</h2></div>
+      <span class="step">INPUT</span>
+    </div>
+    <form action="{{ url_for('analyze') }}" method="post" class="form">
+      <label class="wide">Student name
+        <input name="name" placeholder="Enter full name" required maxlength="80">
+      </label>
+      <label>Age
+        <input type="number" name="age" min="15" max="25" value="18" required>
+      </label>
+      <label>Gender
+        <select name="sex"><option value="F">Female</option><option value="M">Male</option></select>
+      </label>
+      <label>Weekly study time
+        <small>Average study time per week</small>
+        <select name="studytime">
+          <option value="1">1 — Less than 2 hours</option>
+          <option value="2" selected>2 — 2 to 5 hours</option>
+          <option value="3">3 — 5 to 10 hours</option>
+          <option value="4">4 — More than 10 hours</option>
+        </select>
+      </label>
+      <label>Previously failed subjects
+        <small>Number of subjects failed in the past</small>
+        <input type="number" name="failures" min="0" max="3" value="0" required>
+      </label>
+      <label>Number of days absent
+        <small>Total days the student was absent</small>
+        <input type="number" name="absences" min="0" value="0" required>
+      </label>
+      <div class="grade-title wide"><span>Exam Marks</span><small>Enter marks from 0 to 20</small></div>
+      <label>First Exam Marks<input type="number" name="G1" min="0" max="20" placeholder="0–20" required></label>
+      <label>Second Exam Marks<input type="number" name="G2" min="0" max="20" placeholder="0–20" required></label>
+      <label>Final Exam Marks<input type="number" name="G3" min="0" max="20" placeholder="0–20" required></label>
+      <button class="submit wide" type="submit">Analyze student <span>→</span></button>
+    </form>
+  </section>
+
+  {% if students %}
+  <section class="panel compare-panel" id="compare-students">
+    <div class="section-head">
+      <div><p class="eyebrow">STUDENT ANALYTICS</p><h2>Compare students</h2></div>
+      <span class="record-count">Select at least 2 students</span>
+    </div>
+    <p class="compare-help">Choose students to compare their marks across all three exams and their overall average.</p>
+    <form action="{{ url_for('compare_students') }}" method="post">
+      <div class="compare-select-list">
+        {% for s in students %}
+        <label class="compare-option">
+          <input type="checkbox" name="student_indices" value="{{ loop.index0 }}">
+          <span><strong>{{ s.name }}</strong><small>Final exam: {{ s.G3 }}/20</small></span>
+          <b class="table-category {{ 'low' if s.G3 <= 9 else 'medium' if s.G3 <= 13 else 'high' }}">{{ 'Low' if s.G3 <= 9 else 'Medium' if s.G3 <= 13 else 'High' }}</b>
+        </label>
+        {% endfor %}
+      </div>
+      <button class="submit compare-submit" type="submit">Compare selected students <span>→</span></button>
+    </form>
+
+    {% if comparison %}
+    <div class="comparison-results">
+      <h3>Comparison results</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Student</th><th>First exam</th><th>Second exam</th><th>Final exam</th><th>Average</th><th>Performance</th></tr></thead>
+          <tbody>
+            {% for item in comparison %}
+            <tr>
+              <td><strong>{{ item.name }}</strong></td><td>{{ item.G1 }}/20</td><td>{{ item.G2 }}/20</td><td>{{ item.G3 }}/20</td><td><strong>{{ "%.2f"|format(item.average) }}/20</strong></td>
+              <td><span class="table-category {{ item.category|lower }}">{{ item.category }}</span></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="comparison-bars">
+        {% for item in comparison %}
+        <div class="comparison-student">
+          <div class="exam-label"><span>{{ item.name }}</span><b>{{ "%.2f"|format(item.average) }}/20</b></div>
+          <div class="track"><div class="bar exam" style="width: {{ item.average / 20 * 100 }}%"></div></div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </section>
+
+  <section class="panel records-panel">
+    <div class="section-head">
+      <div><p class="eyebrow">CLASS RECORDS</p><h2>Submitted students</h2></div>
+      <span class="record-count">{{ students|length }} records</span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Student name</th><th>Age</th><th>Study time</th><th>First exam</th><th>Second exam</th><th>Final exam</th><th>Category</th></tr></thead>
+        <tbody>
+          {% for s in students %}
+          <tr>
+            <td>{{ s.name }}</td><td>{{ s.age }}</td><td>{{ s.studytime }}</td>
+            <td>{{ s.G1 }}</td><td>{{ s.G2 }}</td><td>{{ s.G3 }}</td>
+            <td><span class="table-category {{ 'low' if s.G3 <= 9 else 'medium' if s.G3 <= 13 else 'high' }}">{{ 'Low' if s.G3 <= 9 else 'Medium' if s.G3 <= 13 else 'High' }}</span></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <form action="{{ url_for('clear') }}" method="post" class="clear-form" onsubmit="return confirm('Clear all student records from this session?');">
+      <button class="clear" type="submit">Clear all records</button>
+    </form>
+  </section>
+  {% endif %}
+
+  <p class="note">Note: Performance category is based on final exam marks (Low: 0–9, Medium: 10–13, High: 14–20). This is descriptive analysis, not a prediction. Records are stored temporarily and will be cleared when the application stops.</p>
+</main>
+<footer>STUDENT PERFORMANCE ANALYSIS · PYTHON · APACHE SPARK</footer>
+</body>
+</html>

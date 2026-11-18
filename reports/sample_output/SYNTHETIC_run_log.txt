@@ -1,0 +1,162 @@
+SYNTHETIC DEMO RUN LOG - generated from sample_data/synthetic_student_mat.csv (random data, NOT the UCI dataset).
+Command: python src/student_analysis.py --input sample_data/synthetic_student_mat.csv --output outputs/synthetic_demo
+
+
+=== Schema ===
+root
+ |-- school: string (nullable = true)
+ |-- sex: string (nullable = true)
+ |-- age: integer (nullable = true)
+ |-- address: string (nullable = true)
+ |-- famsize: string (nullable = true)
+ |-- Pstatus: string (nullable = true)
+ |-- Medu: integer (nullable = true)
+ |-- Fedu: integer (nullable = true)
+ |-- Mjob: string (nullable = true)
+ |-- Fjob: string (nullable = true)
+ |-- reason: string (nullable = true)
+ |-- guardian: string (nullable = true)
+ |-- traveltime: integer (nullable = true)
+ |-- studytime: integer (nullable = true)
+ |-- failures: integer (nullable = true)
+ |-- schoolsup: string (nullable = true)
+ |-- famsup: string (nullable = true)
+ |-- paid: string (nullable = true)
+ |-- activities: string (nullable = true)
+ |-- nursery: string (nullable = true)
+ |-- higher: string (nullable = true)
+ |-- internet: string (nullable = true)
+ |-- romantic: string (nullable = true)
+ |-- famrel: integer (nullable = true)
+ |-- freetime: integer (nullable = true)
+ |-- goout: integer (nullable = true)
+ |-- Dalc: integer (nullable = true)
+ |-- Walc: integer (nullable = true)
+ |-- health: integer (nullable = true)
+ |-- absences: integer (nullable = true)
+ |-- G1: integer (nullable = true)
+ |-- G2: integer (nullable = true)
+ |-- G3: integer (nullable = true)
+
+Row count (raw): 395
+
+=== Sample (5 rows) ===
++------+---+---+-------+-------+-------+----+----+-------+--------+----------+--------+----------+---------+--------+---------+------+----+----------+-------+------+--------+--------+------+--------+-----+----+----+------+--------+---+---+---+
+|school|sex|age|address|famsize|Pstatus|Medu|Fedu|Mjob   |Fjob    |reason    |guardian|traveltime|studytime|failures|schoolsup|famsup|paid|activities|nursery|higher|internet|romantic|famrel|freetime|goout|Dalc|Walc|health|absences|G1 |G2 |G3 |
++------+---+---+-------+-------+-------+----+----+-------+--------+----------+--------+----------+---------+--------+---------+------+----+----------+-------+------+--------+--------+------+--------+-----+----+----+------+--------+---+---+---+
+|GP    |M  |15 |U      |GT3    |T      |1   |4   |other  |teacher |reputation|other   |4         |1        |0       |yes      |no    |no  |yes       |yes    |no    |no      |no      |2     |2       |3    |1   |1   |4     |0       |11 |13 |12 |
+|MS    |F  |21 |U      |LE3    |A      |4   |1   |teacher|teacher |reputation|father  |1         |1        |0       |yes      |yes   |no  |no        |no     |no    |yes     |no      |3     |2       |3    |1   |5   |2     |2       |5  |5  |5  |
+|GP    |F  |15 |R      |LE3    |A      |0   |1   |other  |services|reputation|other   |4         |2        |0       |no       |no    |yes |no        |yes    |yes   |no      |no      |5     |4       |3    |2   |2   |5     |2       |15 |15 |13 |
+|MS    |F  |21 |R      |LE3    |A      |4   |0   |teacher|other   |course    |other   |3         |4        |0       |yes      |no    |no  |yes       |no     |yes   |no      |yes     |5     |1       |3    |5   |5   |2     |0       |10 |12 |13 |
+|MS    |F  |16 |R      |LE3    |T      |0   |1   |other  |teacher |home      |other   |4         |2        |0       |yes      |yes   |yes |no        |yes    |no    |no      |yes     |5     |2       |3    |4   |3   |4     |0       |17 |16 |18 |
++------+---+---+-------+-------+-------+----+----+-------+--------+----------+--------+----------+---------+--------+---------+------+----+----------+-------+------+--------+--------+------+--------+-----+----+----+------+--------+---+---+---+
+
+
+=== Summary statistics (G1, G2, G3, absences) ===
+|summary|                G1|                G2|                G3|         absences|
++-------+------------------+------------------+------------------+-----------------+
+|  count|               395|               395|               395|              395|
+|   mean|10.873417721518987|10.929113924050633|10.987341772151899|4.541772151898734|
+| stddev|3.1127993856689815| 3.475079953750404|3.7406182843739595|6.143805588176913|
+|    min|                 1|                 1|                 0|                0|
+|    25%|                 9|                 8|                 8|                0|
+|    50%|                11|                11|                11|                2|
+|    75%|                13|                13|                14|                6|
+|    max|                18|                19|                20|               30|
++-------+------------------+------------------+------------------+-----------------+
+
+=== Null counts per column ===
+-RECORD 0---------
+ school     | 0   
+ sex        | 0   
+ age        | 0   
+ address    | 0   
+ famsize    | 0   
+ Pstatus    | 0   
+ Medu       | 0   
+ Fedu       | 0   
+ Mjob       | 0   
+ Fjob       | 0   
+ reason     | 0   
+ guardian   | 0   
+ traveltime | 0   
+ studytime  | 0   
+ failures   | 0   
+ schoolsup  | 0   
+ famsup     | 0   
+ paid       | 0   
+ activities | 0   
+ nursery    | 0   
+ higher     | 0   
+ internet   | 0   
+ romantic   | 0   
+ famrel     | 0   
+ freetime   | 0   
+ goout      | 0   
+ Dalc       | 0   
+ Walc       | 0   
+ health     | 0   
+ absences   | 0   
+ G1         | 0   
+ G2         | 0   
+ G3         | 0   
+
+Exact duplicate rows: 0
+Rows with grades outside 0-20 removed: 0
+Row count (cleaned): 395
+
+=== Students per performance category ===
++-----------+--------+
+|Performance|students|
++-----------+--------+
+|        Low|     134|
+|     Medium|     159|
+|       High|     102|
++-----------+--------+
+
+Overall average G3: 10.99
+
+=== Average G3 by studytime ===
++---------+------+--------+
+|studytime|avg_G3|students|
++---------+------+--------+
+|        1| 10.09|     103|
+|        2| 10.66|      91|
+|        3| 11.02|      97|
+|        4| 12.13|     104|
++---------+------+--------+
+
+=== Average G3 by failures ===
++--------+------+--------+
+|failures|avg_G3|students|
++--------+------+--------+
+|       0| 11.38|     289|
+|       1|  11.2|      50|
+|       2|  9.33|      33|
+|       3|  7.91|      23|
++--------+------+--------+
+
+=== Average G3 by absences band ===
++-------------+------+--------+
+|absences_band|avg_G3|students|
++-------------+------+--------+
+|            0| 11.08|     130|
+|          1-5| 10.99|     143|
+|         6-10| 10.71|      82|
+|          11+| 11.23|      40|
++-------------+------+--------+
+
+=== Top 10 by G3 (non-identifying columns only) ===
++------+---+---+---------+--------+--------+---+---+---+------------+-----------+
+|school|sex|age|studytime|failures|absences| G1| G2| G3|AverageMarks|Performance|
++------+---+---+---------+--------+--------+---+---+---+------------+-----------+
+|    GP|  M| 17|        4|       0|       0| 17| 18| 20|       18.33|       High|
+|    GP|  M| 17|        4|       0|      30| 16| 19| 20|       18.33|       High|
+|    MS|  F| 20|        4|       0|       6| 15| 17| 19|        17.0|       High|
+|    MS|  F| 21|        4|       0|      14| 14| 16| 19|       16.33|       High|
+|    GP|  F| 17|        3|       0|       6| 13| 16| 19|        16.0|       High|
+|    GP|  F| 21|        4|       0|       0| 16| 18| 18|       17.33|       High|
+|    MS|  F| 16|        2|       0|       0| 17| 16| 18|        17.0|       High|
+|    MS|  M| 16|        4|       0|       0| 17| 16| 18|        17.0|       High|
+|    GP|  M| 20|        2|       0|       0| 14| 17| 18|       16.33|       High|
+|    MS|  F| 21|        3|       0|       6| 15| 16| 18|       16.33|       

@@ -1,0 +1,4 @@
+pyspark>=3.5
+matplotlib>=3.7
+pytest>=7.0
+Flask>=3.0
